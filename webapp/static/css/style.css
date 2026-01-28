@@ -1,0 +1,361 @@
+.stage-container {
+  width: 100%;
+  min-height: 520px;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* Square viewers for ROI image and mask: keep them the SAME on-screen size */
+.square-viewer {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  overflow: hidden;
+  position: relative;
+  /* Prevent browser gesture handling (trackpad pinch, etc.) inside viewers */
+  touch-action: none;
+}
+
+/* Cursor (x,y) overlay shown inside ROI & mask viewers */
+.xy-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  color: #00a000;
+  border: 1px solid rgba(0,0,0,0.18);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.1;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+
+  /* Hidden by default; JS will position + show near cursor */
+  display: none;
+}
+
+.xy-overlay .ival {
+  color: #d00000;
+  font-weight: 700;
+}
+
+.square-viewer img,
+.square-viewer canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  /* Required for correct mouse-wheel zoom math */
+  transform-origin: 0 0;
+}
+
+#maskCanvas {
+  cursor: default;
+}
+
+.card-header {
+  background: rgba(0,0,0,.03);
+}
+
+/* Compact inline controls for the CR mask header */
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header-control-group {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.header-control-group label,
+.header-control-group span {
+  white-space: nowrap;
+}
+
+/* Cursor coordinate readouts */
+.cursor-readout {
+  font-variant-numeric: tabular-nums;
+}
+.stage-container {
+  width: 100%;
+  min-height: 520px;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* Square viewers for ROI image and mask: keep them the SAME on-screen size */
+.square-viewer {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  overflow: hidden;
+  position: relative;
+  /* Prevent browser gesture handling (trackpad pinch, etc.) inside viewers */
+  touch-action: none;
+}
+
+/* Cursor (x,y) overlay shown inside ROI & mask viewers */
+.xy-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  color: #00a000;
+  border: 1px solid rgba(0,0,0,0.18);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.1;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+
+  /* Hidden by default; JS will position + show near cursor */
+  display: none;
+}
+
+.xy-overlay .ival {
+  color: #d00000;
+  font-weight: 700;
+}
+
+.square-viewer img,
+.square-viewer canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  /* Required for correct mouse-wheel zoom math */
+  transform-origin: 0 0;
+}
+
+#maskCanvas {
+  cursor: default;
+}
+
+.card-header {
+  background: rgba(0,0,0,.03);
+}
+
+/* Compact inline controls for the CR mask header */
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header-control-group {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.header-control-group label,
+.header-control-group span {
+  white-space: nowrap;
+}
+
+/* Cursor coordinate readouts */
+.cursor-readout {
+  font-variant-numeric: tabular-nums;
+}
+
+.stage-container {
+  width: 100%;
+  min-height: 520px;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* Square viewers for ROI image and mask: keep them the SAME on-screen size */
+.square-viewer {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  overflow: hidden;
+  position: relative;
+  /* Prevent browser gesture handling (trackpad pinch, etc.) inside viewers */
+  touch-action: none;
+}
+
+/* Cursor (x,y) overlay shown inside ROI & mask viewers */
+.xy-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  color: #00a000;
+  border: 1px solid rgba(0,0,0,0.18);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.1;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+
+  /* Hidden by default; JS will position + show near cursor */
+  display: none;
+}
+
+.xy-overlay .ival {
+  color: #d00000;
+  font-weight: 700;
+}
+
+.square-viewer img,
+.square-viewer canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  /* Required for correct mouse-wheel zoom math */
+  transform-origin: 0 0;
+}
+
+#maskCanvas {
+  cursor: default;
+}
+
+.card-header {
+  background: rgba(0,0,0,.03);
+}
+
+/* Compact inline controls for the CR mask header */
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header-control-group {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.header-control-group label,
+.header-control-group span {
+  white-space: nowrap;
+}
+
+/* Cursor coordinate readouts */
+.cursor-readout {
+  font-variant-numeric: tabular-nums;
+}
+.stage-container {
+  width: 100%;
+  min-height: 520px;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* Square viewers for ROI image and mask: keep them the SAME on-screen size */
+.square-viewer {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(0,0,0,.1);
+  background: white;
+  overflow: hidden;
+  position: relative;
+  /* Prevent browser gesture handling (trackpad pinch, etc.) inside viewers */
+  touch-action: none;
+}
+
+/* Cursor (x,y) overlay shown inside ROI & mask viewers */
+.xy-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  color: #00a000;
+  border: 1px solid rgba(0,0,0,0.18);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.1;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+
+  /* Hidden by default; JS will position + show near cursor */
+  display: none;
+}
+
+.xy-overlay .ival {
+  color: #d00000;
+  font-weight: 700;
+}
+
+.square-viewer img,
+.square-viewer canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+  /* Required for correct mouse-wheel zoom math */
+  transform-origin: 0 0;
+}
+
+#maskCanvas {
+  cursor: default;
+}
+
+.card-header {
+  background: rgba(0,0,0,.03);
+}
+
+/* Compact inline controls for the CR mask header */
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header-control-group {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.header-control-group label,
+.header-control-group span {
+  white-space: nowrap;
+}
+
+/* Cursor coordinate readouts */
+.cursor-readout {
+  font-variant-numeric: tabular-nums;
+}

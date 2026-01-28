@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CRNet FITS Viewer & Cosmic Ray Mask</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <span class="navbar-brand">CRNet Web App</span>
+    <div class="d-flex gap-2 align-items-center text-white">
+      <small class="opacity-75">Model: {{ model_status }}</small>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid py-3">
+  <div class="row g-3">
+
+    <!-- TOP LEFT: Controls -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">Upload &amp; options</span>
+            <span id="statusBadge" class="badge text-bg-secondary" style="display:none">No file</span>
+          </div>
+        </div>
+        <div class="card-body">
+
+          <div class="mb-3">
+            <label class="form-label">Upload .fits</label>
+            <input id="fitsFile" class="form-control" type="file" accept=".fits" />
+            <div class="form-text">The first 2D image HDU will be used.</div>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-12">
+              <label class="form-label">Full image visualization</label>
+              <select id="fullVis" class="form-select">
+                <option value="zscale" selected>ZScale (linear)</option>
+                <option value="logstretch">LogStretch (ZScale limits)</option>
+                <option value="asinhstretch">AsinhStretch (ZScale limits)</option>
+                <option value="minmax">Min/Max (linear)</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">ROI size (fixed square, pixels)</label>
+              <select id="roiSize" class="form-select">
+                <option value="64">64</option>
+                <option value="128">128</option>
+                <option value="256" selected>256</option>
+                <option value="512">512</option>
+                <option value="1024">1024</option>
+              </select>
+              <div class="form-text">Drag the ROI box on the full image (top-right).</div>
+            </div>
+          </div>
+
+                    <div class="d-none">
+            <!-- Hidden stats elements kept for JS updates without cluttering the UI -->
+            <span id="fullShape">—</span>
+            <span id="fullMinMax">—</span>
+            <span id="fullMeanStd">—</span>
+
+            <span id="roiXY">—</span>
+            <span id="roiMinMax">—</span>
+            <span id="roiMeanStd">—</span>
+            <span id="inferMs">—</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP RIGHT: Full image canvas -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+                <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="fw-semibold">Full image</span>
+            <span class="small text-muted">Min/Max: <span id="fullMinMaxHeader">—</span></span>
+          </div>
+          <div class="small text-muted">Drag ROI box (fixed square)</div>
+        </div>
+    
+        <div class="card-body">
+          <div id="fullStageContainer" class="stage-container">
+            <div class="text-muted small">Upload a FITS file to display the image.</div>
+          </div>
+          <div class="form-text">
+            Tip: click on the image to center the ROI at that location.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM LEFT: ROI image -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="fw-semibold">ROI image</span>
+          </div>
+
+          <!-- ROI visualization control (next row) -->
+          <div class="header-controls mt-2" style="justify-content: flex-start;">
+            <div class="header-control-group">
+              <label class="form-label mb-0 small">Vis</label>
+              <select id="roiVis" class="form-select form-select-sm" style="width: 10.5rem;">
+                <option value="zscale" selected>ZScale (linear)</option>
+                <option value="logstretch">LogStretch</option>
+                <option value="asinhstretch">AsinhStretch</option>
+                <option value="minmax">Min/Max</option>
+              </select>
+            </div>
+            <div class="header-control-group">
+              <label class="form-label mb-0 small">Min</label>
+              <input id="roiMinVal" type="text" class="form-control form-control-sm" value="—" readonly style="width: 7.25rem;">
+            </div>
+            <div class="header-control-group">
+              <label class="form-label mb-0 small">Max</label>
+              <input id="roiMaxVal" type="text" class="form-control form-control-sm" value="—" readonly style="width: 7.25rem;">
+            </div>
+          </div>
+        </div>
+	        <div class="card-body">
+	          <!-- ROI stats line intentionally hidden (elements kept for JS updates without UI clutter) -->
+	          <div class="small text-muted mb-2 d-none" id="roiStatsLine">
+	            <span id="roiMinMaxInline">—</span>
+	            <span id="roiMeanStdInline">—</span>
+	          </div>
+          <span id="roiCursorXY" class="cursor-readout d-none">—</span>
+
+          <div id="roiViewer" class="square-viewer">
+            <img id="roiImage" alt="ROI" />
+            <div id="roiXYOverlay" class="xy-overlay">—</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM RIGHT: Mask (editable) -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <span class="fw-semibold">CR mask</span>
+
+          <div class="header-controls">
+                      <div class="header-control-group">
+              <label class="form-label mb-0 small">Threshold</label>
+              <input id="maskThreshold" type="number" class="form-control form-control-sm" min="0" max="1" step="0.01" value="0.50" style="width: 5.5rem;">
+            </div>
+
+            <div class="header-control-group">
+              <label class="form-label mb-0 small">Dilation</label>
+              <select id="maskDilation" class="form-select form-select-sm" style="width: 4.5rem;">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+              </select>
+            </div>
+
+            <div class="header-control-group">
+              <label class="form-label mb-0 small">Brush</label>
+              <select id="brushMode" class="form-select form-select-sm" style="width: 8.75rem;">
+                <option value="paint" selected>Paint (set to 1)</option>
+                <option value="erase">Erase (set to 0)</option>
+              </select>
+            </div>
+
+            <div class="header-control-group">
+              <label class="form-label mb-0 small">Size</label>
+              <select id="brushSize" class="form-select form-select-sm" style="width: 4.5rem;">
+                <option value="1" selected>1</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="d-none">
+            <span id="maskThresholdVal">0.50</span>
+            <span id="maskDilationVal">0</span>
+            <span id="maskCursorXY" class="cursor-readout">—</span>
+          </div>
+
+          <div id="maskViewer" class="square-viewer">
+            <canvas id="maskCanvas"></canvas>
+            <div id="maskXYOverlay" class="xy-overlay">—</div>
+          </div>
+
+          <!-- Extra mask actions (kept at the bottom) -->
+          <div class="d-flex gap-2 mt-2 flex-wrap justify-content-end">
+            <button id="btnApplyMask" class="btn btn-sm btn-primary">Apply threshold/dilation (resets edits)</button>
+            <button id="btnResetMask" class="btn btn-sm btn-outline-secondary">Reset to model (0.5, no dilation)</button>
+            <button id="btnDownloadMask" class="btn btn-sm btn-outline-success">Download edited mask (PNG)</button>
+            <button id="btnDownloadMaskFits" class="btn btn-sm btn-outline-success">Download edited mask (FITS)</button>
+          </div>
+
+          <div class="form-text mt-2">
+            Tip: Apply threshold/dilation to rebuild from the model output (this will reset brush edits).
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Konva for interactive ROI box -->
+<script src="https://cdn.jsdelivr.net/npm/konva@9.3.14/konva.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
