@@ -22,6 +22,8 @@ conda/
 # OS
 .DS_Store
 
+*.fits
+
 # Logs
 *.log
 
@@ -31,3 +33,8 @@ conda/
 # IDE
 .vscode/
 .idea/
+
+# Large astronomy data files
+*.fits
+*.fit
+*.fts
